@@ -1,10 +1,11 @@
 import argparse
 import time
 from sys import platform
-
+import pdb
 from models import *
 from utils.datasets import *
 from utils.utils import *
+from utils import torch_utils
 
 
 def detect(
@@ -59,7 +60,7 @@ def detect(
             return
         pred, _ = model(img)
         detections = non_max_suppression(pred, conf_thres, nms_thres)[0]
-
+        pdb.set_trace()
         if detections is not None and len(detections) > 0:
             # Rescale boxes from 416 to true image size
             scale_coords(img_size, detections[:, :4], im0.shape).round()
