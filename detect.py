@@ -73,7 +73,7 @@ def detect(
             # Draw bounding boxes and labels of detections
             for *xyxy, conf, cls_conf, cls in detections:
                 if save_txt:  # Write to file
-                    if classes[int(cls)] == "sports ball":
+                    if classes[int(cls)] == "person":
                         with open(save_path + '.txt', 'a') as file:
                             file.write(('%g ' * 6 + '\n') % (*xyxy, cls, conf))
 

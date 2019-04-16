@@ -2,9 +2,10 @@ import xml.etree.ElementTree as ET
 from skimage.transform import resize
 import numpy as np
 import pdb
+from scipy.io import loadmat
 
 
-def get_scaled_annotation(filename, new_size):
+def get_scaled_annotations_ball(filename, new_size):
     file = ET.parse(filename)
     root = file.getroot()
     annotation = root.findall("object")[0]
@@ -24,9 +25,30 @@ def get_scaled_annotation(filename, new_size):
     ymax = int(ymax/(height/new_h))
     xmin = int(xmin/(width/new_w))
     xmax = int(xmax/(width/new_w))
-    pdb.set_trace()
+
+    return xmin, ymin, xmax, ymax
+
+
+def get_scaled_annotations_person(matfile, new_size):
+    mat = loadmat(matfile)
+    annotations = mat["annot"][0]
+    newannot = dict()
+    height, width = 720, 1280
+    new_h, new_w = new_size
+    new_h, new_w = float(new_h), float(new_w)
+
+    for annot in annotations:
+        name = annot[1][0].encode("utf-8")
+        bbox = annot[0].astype(np.int)
+        bbox[:, [0, 2]] = bbox[:, [0, 2]] / (width/new_w)
+        bbox[:, [1, 3]] = bbox[:, [1, 3]] / (height/new_h)
+        newannot[name] = bbox
+
+    return newannot
 
 
 if __name__ == "__main__":
-    filename = "/home/chris/sports/soccer_ball_data/annotations/scene00601.xml"
-    get_scaled_annotation(filename, (416, 416))
+    # filename = "/home/chris/sports/soccer_ball_data/annotations/scene00741.xml"
+    # get_scaled_annotation_ball(filename, (416, 416))
+    matfile = "/home/chris/sports/SoccerPlayerDetection_bmvc17_v1/annotation_2.mat"
+    get_scaled_annotations_person(matfile, (416, 416))
