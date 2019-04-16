@@ -60,7 +60,7 @@ def detect(
             return
         pred, _ = model(img)
         detections = non_max_suppression(pred, conf_thres, nms_thres)[0]
-        pdb.set_trace()
+
         if detections is not None and len(detections) > 0:
             # Rescale boxes from 416 to true image size
             scale_coords(img_size, detections[:, :4], im0.shape).round()
@@ -77,6 +77,7 @@ def detect(
                         file.write(('%g ' * 6 + '\n') % (*xyxy, cls, conf))
 
                 # Add bbox to the image
+                pdb.set_trace()
                 label = '%s %.2f' % (classes[int(cls)], conf)
                 plot_one_box(xyxy, im0, label=label, color=colors[int(cls)])
 
