@@ -126,3 +126,4 @@ if __name__ == '__main__':
             conf_thres=opt.conf_thres,
             nms_thres=opt.nms_thres
         )
+# python3 detect.py --cfg cfg/yolov3.cfg --weights ~/sports/yolov3.weights --images ~/sports/soccer_ball_data/rescaled/
