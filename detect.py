@@ -126,6 +126,7 @@ if __name__ == '__main__':
             img_size=opt.img_size,
             conf_thres=opt.conf_thres,
             nms_thres=opt.nms_thres,
-            save_images=False
+            save_images=False,
+            save_txt=True
         )
 # python3 detect.py --cfg cfg/yolov3.cfg --weights ~/sports/yolov3.weights --images ~/sports/soccer_ball_data/rescaled/
