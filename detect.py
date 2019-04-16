@@ -73,11 +73,11 @@ def detect(
             # Draw bounding boxes and labels of detections
             for *xyxy, conf, cls_conf, cls in detections:
                 if save_txt:  # Write to file
-                    with open(save_path + '.txt', 'a') as file:
-                        file.write(('%g ' * 6 + '\n') % (*xyxy, cls, conf))
+                    if classes[int(cls)] == "sports ball":
+                        with open(save_path + '.txt', 'a') as file:
+                            file.write(('%g ' * 6 + '\n') % (*xyxy, cls, conf))
 
                 # Add bbox to the image
-                pdb.set_trace()
                 label = '%s %.2f' % (classes[int(cls)], conf)
                 plot_one_box(xyxy, im0, label=label, color=colors[int(cls)])
 
@@ -125,6 +125,7 @@ if __name__ == '__main__':
             opt.images,
             img_size=opt.img_size,
             conf_thres=opt.conf_thres,
-            nms_thres=opt.nms_thres
+            nms_thres=opt.nms_thres,
+            save_images=False
         )
 # python3 detect.py --cfg cfg/yolov3.cfg --weights ~/sports/yolov3.weights --images ~/sports/soccer_ball_data/rescaled/
