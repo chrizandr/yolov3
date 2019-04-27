@@ -1,35 +1,42 @@
-import xml.etree.ElementTree as ET
-from skimage.transform import resize
+"""Read and scale annotations."""
 import numpy as np
-import pdb
+import os
 from scipy.io import loadmat
+import xml.etree.ElementTree as ET
 
 
-def get_scaled_annotations_ball(filename, new_size):
-    file = ET.parse(filename)
-    root = file.getroot()
-    annotation = root.findall("object")[0]
-    bbox = annotation.findall("bndbox")[0]
-    xmin = int(bbox.findall("xmin")[0].text)
-    ymin = int(bbox.findall("ymin")[0].text)
-    xmax = int(bbox.findall("xmax")[0].text)
-    ymax = int(bbox.findall("ymax")[0].text)
+def get_scaled_annotations_ball(annotation_dir, new_size=(416, 416)):
+    """Read and scale annotations based on new image size."""
+    files = os.listdir(annotation_dir)
+    annotations = dict()
+    for f in files:
+        file = ET.parse(os.path.join(annotation_dir, f))
+        root = file.getroot()
+        annotation = root.findall("object")[0]
+        bbox = annotation.findall("bndbox")[0]
+        xmin = int(bbox.findall("xmin")[0].text)
+        ymin = int(bbox.findall("ymin")[0].text)
+        xmax = int(bbox.findall("xmax")[0].text)
+        ymax = int(bbox.findall("ymax")[0].text)
 
-    size = root.findall("size")[0]
-    width = int(size.findall("width")[0].text)
-    height = int(size.findall("height")[0].text)
+        size = root.findall("size")[0]
+        width = int(size.findall("width")[0].text)
+        height = int(size.findall("height")[0].text)
 
-    new_h, new_w = new_size
-    new_h, new_w = float(new_h), float(new_w)
-    ymin = int(ymin/(height/new_h))
-    ymax = int(ymax/(height/new_h))
-    xmin = int(xmin/(width/new_w))
-    xmax = int(xmax/(width/new_w))
+        new_h, new_w = new_size
+        new_h, new_w = float(new_h), float(new_w)
+        ymin = int(ymin/(height/new_h))
+        ymax = int(ymax/(height/new_h))
+        xmin = int(xmin/(width/new_w))
+        xmax = int(xmax/(width/new_w))
 
-    return xmin, ymin, xmax, ymax
+        annotations[f.strip(".xml") + ".png"] = [xmin, ymin, xmax, ymax]
+
+    return annotations
 
 
-def get_scaled_annotations_person(matfile, new_size):
+def get_scaled_annotations_person(matfile, new_size=(416, 416)):
+    """Scale annotations based on new image size."""
     mat = loadmat(matfile)
     annotations = mat["annot"][0]
     newannot = dict()
@@ -42,7 +49,7 @@ def get_scaled_annotations_person(matfile, new_size):
         bbox = annot[0].astype(np.int)
         bbox[:, [0, 2]] = bbox[:, [0, 2]] / (width/new_w)
         bbox[:, [1, 3]] = bbox[:, [1, 3]] / (height/new_h)
-        newannot[name] = bbox
+        newannot[name.decode()] = bbox
 
     return newannot
 
