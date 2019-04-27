@@ -129,4 +129,4 @@ if __name__ == '__main__':
             save_images=False,
             save_txt=True
         )
-# python3 detect.py --cfg cfg/yolov3.cfg --weights ~/sports/yolov3.weights --images ~/sports/soccer_ball_data/rescaled/
+# python3 detect.py --cfg cfg/yolov3.cfg --weights ~/sports/yolov3.weights --images ~/sports/SoccerPlayerDetection_bmvc17_v1/DataSet_002/rescaled/
