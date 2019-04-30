@@ -1,6 +1,9 @@
 """Evaluate results and find the reasons for errors."""
+import cv2
 import numpy as np
+import matplotlib.pyplot as plt
 import os
+import code
 import pdb
 from soccer_annotations import get_scaled_annotations_ball, get_scaled_annotations_person
 
@@ -19,8 +22,8 @@ def read_output_file(filename):
 def evaluate_person(output_dir, data_dir, annotation_file, overlap=0.75):
     """Evaluate output for the player data."""
     files = os.listdir(data_dir)
-    annot_files = os.listdir(output_dir)
-    output_imgs = [x.strip(".txt") for x in annot_files]
+    output_files = os.listdir(output_dir)
+    output_imgs = [x.strip(".txt") for x in output_files]
     annotations = get_scaled_annotations_person(annotation_file)
     correct = 0
     total = 0
@@ -30,26 +33,33 @@ def evaluate_person(output_dir, data_dir, annotation_file, overlap=0.75):
         if f in output_imgs:
             output = read_output_file(os.path.join(output_dir, f + ".txt"))
             count = match_annotations(output, annotation, overlap)
+            if count == annotation.shape[0]:
+                output_folder = "/home/chris/sports/output/player/good_detection"
+                mark_ball(os.path.join(data_dir, f), output, annotation, output_folder)
             correct += count
     return float(correct)/total * 100
 
 
 def evaluate_ball(output_dir, data_dir, annotation_dir, overlap=0.75):
     """Evaluate output for the ball data."""
+    no_annot = ['scene19661.png', 'scene17661.png', 'scene09761.png', 'scene17641.png']
     files = os.listdir(data_dir)
-    annot_files = os.listdir(output_dir)
-    output_imgs = [x.strip(".txt") for x in annot_files]
+    output_files = os.listdir(output_dir)
+    output_imgs = [x.strip(".txt") for x in output_files]
     annotations = get_scaled_annotations_ball(annotation_dir)
-    pdb.set_trace()
     correct = 0
     total = 0
     for f in files:
-        annotation = annotations[f]
-        total = total + annotation.shape[0]
-        if f in output_imgs:
-            output = read_output_file(os.path.join(output_dir, f + ".txt"))
-            count = match_annotations(output, annotation, overlap)
-            correct += count
+        if f not in no_annot:
+            annotation = annotations[f]
+            total = total + annotation.shape[0]
+            if f in output_imgs:
+                output = read_output_file(os.path.join(output_dir, f + ".txt"))
+                count = match_annotations(output, annotation, overlap)
+                if count == annotation.shape[0]:
+                    output_folder = "/home/chris/sports/output/ball/detection"
+                    mark_ball(os.path.join(data_dir, f), output, annotation, output_folder)
+                correct += count
     return float(correct)/total * 100
 
 
@@ -81,19 +91,36 @@ def bb_intersection_over_union(boxA, boxB):
     return iou
 
 
+def mark_ball(img_file, output, annotation, output_dir):
+    img = cv2.imread(img_file)
+
+    for x in output:
+        cv2.rectangle(img, tuple(x[0:2]), tuple(x[2:]), (0, 0, 255), 2)
+    for x in annotation:
+        cv2.rectangle(img, tuple(x[0:2]), tuple(x[2:]), (0, 255, 0), 2)
+    cv2.imwrite(os.path.join(output_dir, img_file.split("/")[-1]), img)
+
+
 if __name__ == "__main__":
-    player_data = "/home/chrizandr/sports/SoccerPlayerDetection_bmvc17_v1/DataSet_002/"
-    soccer_ball_data = "/home/chrizandr/sports/soccer_ball_data/images/"
+    player_data = "/home/chris/sports/SoccerPlayerDetection_bmvc17_v1/DataSet_002/rescaled/"
+    soccer_ball_data = "/home/chris/sports/soccer_ball_data/rescaled/"
     output_player = "output_person/"
     output_soccer = "output_ball/"
-    annotation_file = "/home/chrizandr/sports/SoccerPlayerDetection_bmvc17_v1/annotation_2.mat/"
-    annotation_dir = "/home/chrizandr/sports/soccer_ball_data/annotations/"
+    annotation_file = "/home/chris/sports/SoccerPlayerDetection_bmvc17_v1/annotation_2.mat"
+    annotation_dir = "/home/chris/sports/soccer_ball_data/annotations/"
 
-    evaluate_ball(output_soccer, soccer_ball_data, annotation_dir)
+    evaluate_person(output_player, player_data, annotation_file, 0.5)
+    # evaluate_ball(output_soccer, soccer_ball_data, annotation_dir, 0.5)
 
-    # olap = np.linspace(0, 1, 10)
-    # acc = [evaluate_person(output_dir, player_data, annotation_file, x) for x in olap]
+    # olap = np.linspace(0.1, 1, 10)
+    # acc = [evaluate_ball(output_soccer, soccer_ball_data, annotation_dir, x) for x in olap]
     #
-    # import matplotlib.pyplot as plt
-    # plt.plot(olap, acc)
+    # plt.plot(olap, acc, color='red', label='Ball detection')
+    #
+    # olap = np.linspace(0.1, 1, 10)
+    # acc = [evaluate_person(output_player, player_data, annotation_file, x) for x in olap]
+    #
+    # plt.plot(olap, acc, color='blue', label='Player Detection')
+    # plt.legend()
     # plt.show()
+    pdb.set_trace()

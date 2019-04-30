@@ -1,6 +1,7 @@
 """Read and scale annotations."""
 import numpy as np
 import os
+import pdb
 from scipy.io import loadmat
 import xml.etree.ElementTree as ET
 
@@ -10,8 +11,11 @@ def get_scaled_annotations_ball(annotation_dir, new_size=(416, 416)):
     files = os.listdir(annotation_dir)
     annotations = dict()
     for f in files:
-        file = ET.parse(os.path.join(annotation_dir, f))
-        root = file.getroot()
+        try:
+            file = ET.parse(os.path.join(annotation_dir, f))
+            root = file.getroot()
+        except:
+            pdb.set_trace()
         annotation = root.findall("object")[0]
         bbox = annotation.findall("bndbox")[0]
         xmin = int(bbox.findall("xmin")[0].text)
@@ -30,7 +34,7 @@ def get_scaled_annotations_ball(annotation_dir, new_size=(416, 416)):
         xmin = int(xmin/(width/new_w))
         xmax = int(xmax/(width/new_w))
 
-        annotations[f.strip(".xml") + ".png"] = [xmin, ymin, xmax, ymax]
+        annotations[f.strip(".xml") + ".png"] = np.array([xmin, ymin, xmax, ymax]).reshape(1, 4)
 
     return annotations
 
