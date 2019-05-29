@@ -111,7 +111,7 @@ if __name__ == '__main__':
     parser.add_argument('--data-cfg', type=str, default='data/coco.data', help='coco.data file path')
     parser.add_argument('--weights', type=str, default='weights/yolov3-spp.weights', help='path to weights file')
     parser.add_argument('--images', type=str, default='data/samples', help='path to images')
-    parser.add_argument('--img-size', type=int, default=416, help='size of each image dimension')
+    parser.add_argument('--img-size', type=int, default=1000, help='size of each image dimension')
     parser.add_argument('--conf-thres', type=float, default=0.5, help='object confidence threshold')
     parser.add_argument('--nms-thres', type=float, default=0.5, help='iou threshold for non-maximum suppression')
     opt = parser.parse_args()
@@ -129,4 +129,4 @@ if __name__ == '__main__':
             save_images=False,
             save_txt=True
         )
-# python3 detect.py --cfg cfg/yolov3.cfg --weights ~/sports/yolov3.weights --images ~/sports/SoccerPlayerDetection_bmvc17_v1/DataSet_002/rescaled/
+# python3 detect.py --cfg cfg/yolov3.cfg --weights ~/sports/yolov3.weights --images ~/sports/detection_exp/rescaled/
