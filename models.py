@@ -194,7 +194,6 @@ class Darknet(nn.Module):
                 if len(layer_i) == 1:
                     x = layer_outputs[layer_i[0]]
                 else:
-                    pdb.set_trace()
                     x = torch.cat([layer_outputs[i] for i in layer_i], 1)
             elif mtype == 'shortcut':
                 layer_i = int(module_def['from'])
