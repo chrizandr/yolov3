@@ -4,6 +4,34 @@ import os
 import pdb
 from scipy.io import loadmat
 import xml.etree.ElementTree as ET
+from scipy.io import loadmat
+
+
+def format_annotations(file, outfolder, new_size=(1024, 1024), prefix="D1_",):
+    """Format annotation and write to file."""
+    width = 1280
+    height = 720
+
+    new_h, new_w = new_size
+    new_h, new_w = float(new_h), float(new_w)
+
+    mat = loadmat(file)['annot'][0]
+    for annot, fname in mat:
+        fname = fname[0]
+        print(fname)
+        f = open(os.path.join(outfolder, prefix + fname.replace(".jpg", ".txt").replace(".png", ".txt")), "w")
+        for p in annot:
+            xmin, ymin, xmax, ymax = p
+            ymin = int(ymin/(height/new_h))
+            ymax = int(ymax/(height/new_h))
+            xmin = int(xmin/(width/new_w))
+            xmax = int(xmax/(width/new_w))
+            out = ["0"] + [str(x) for x in [xmin, ymin, xmax, ymax]]
+            out = " ".join(out) + "\n"
+            pdb.set_trace()
+
+
+
 
 
 def get_scaled_annotations_PVOC(annotation_dir, new_size=(1024, 1024)):
@@ -63,7 +91,9 @@ def get_scaled_annotations_person(matfile, new_size=(416, 416)):
 
 
 if __name__ == "__main__":
-    filename = "/home/chrizandr/sports/detection_exp/annotations/"
-    get_scaled_annotations_PVOC(filename, (1024, 1024))
+    # filename = "/home/chrizandr/sports/detection_exp/annotations/"
+    # get_scaled_annotations_PVOC(filename, (1024, 1024))
     # matfile = "/home/chris/sports/SoccerPlayerDetection_bmvc17_v1/annotation_2.mat"
     # get_scaled_annotations_person(matfile, (416, 416))
+    format_annotations("/home/chrizandr/sports/SoccerPlayerDetection_bmvc17_v1/annotation_1.mat",
+                       "/home/chrizandr/sports/train/annotations/")
