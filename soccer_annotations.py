@@ -20,18 +20,19 @@ def format_annotations(file, outfolder, new_size=(1024, 1024), prefix="D1_",):
         fname = fname[0]
         print(fname)
         f = open(os.path.join(outfolder, prefix + fname.replace(".jpg", ".txt").replace(".png", ".txt")), "w")
+        # f = open("sample2.txt", "w")
         for p in annot:
             xmin, ymin, xmax, ymax = p
             ymin = int(ymin/(height/new_h))
             ymax = int(ymax/(height/new_h))
             xmin = int(xmin/(width/new_w))
             xmax = int(xmax/(width/new_w))
-            out = ["0"] + [str(x) for x in [xmin, ymin, xmax, ymax]]
+            c_x, c_y = int((xmin + xmax) / 2) / 1024.0, int((ymin + ymax) / 2) / 1024.0
+            b_w, b_h = abs(xmax - xmin) / 1024.0, abs(ymax - ymin) / 1024.0
+            out = ["0"] + [str(x) for x in [c_x, c_y, b_w, b_h]]
             out = " ".join(out) + "\n"
-            pdb.set_trace()
-
-
-
+            f.write(out)
+        f.close()
 
 
 def get_scaled_annotations_PVOC(annotation_dir, new_size=(1024, 1024)):
@@ -95,5 +96,5 @@ if __name__ == "__main__":
     # get_scaled_annotations_PVOC(filename, (1024, 1024))
     # matfile = "/home/chris/sports/SoccerPlayerDetection_bmvc17_v1/annotation_2.mat"
     # get_scaled_annotations_person(matfile, (416, 416))
-    format_annotations("/home/chrizandr/sports/SoccerPlayerDetection_bmvc17_v1/annotation_1.mat",
+    format_annotations("/home/chris/sports/SoccerPlayerDetection_bmvc17_v1/annotation_1.mat",
                        "/home/chrizandr/sports/train/annotations/")
