@@ -96,7 +96,7 @@ def train_val_split(images):
     indices = np.random.permutation(len(files))
     split_val = int(len(files) * 0.8)
     train = [os.path.join(images, files[i]) for i in indices[0:split_val]]
-    val = [os.path.join(images, files[i]) for i in indices[0:split_val]]
+    val = [os.path.join(images, files[i]) for i in indices[split_val::]]
     f = open("train.txt", "w")
     f.write("\n".join(train))
     f.close()
