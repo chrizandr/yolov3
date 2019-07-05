@@ -96,5 +96,5 @@ if __name__ == "__main__":
     # get_scaled_annotations_PVOC(filename, (1024, 1024))
     # matfile = "/home/chris/sports/SoccerPlayerDetection_bmvc17_v1/annotation_2.mat"
     # get_scaled_annotations_person(matfile, (416, 416))
-    format_annotations("/home/chris/sports/SoccerPlayerDetection_bmvc17_v1/annotation_1.mat",
+    format_annotations("/home/chrizandr/sports/SoccerPlayerDetection_bmvc17_v1/annotation_1.mat",
                        "/home/chrizandr/sports/train/annotations/")
