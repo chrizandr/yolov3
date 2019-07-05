@@ -91,10 +91,25 @@ def get_scaled_annotations_person(matfile, new_size=(416, 416)):
     return newannot
 
 
+def train_val_split(images):
+    files = os.listdir(images)
+    indices = np.random.permutation(len(files))
+    split_val = int(len(files) * 0.8)
+    train = [os.path.join(images, files[i]) for i in indices[0:split_val]]
+    val = [os.path.join(images, files[i]) for i in indices[0:split_val]]
+    f = open("train.txt", "w")
+    f.write("\n".join(train))
+    f.close()
+    f = open("val.txt", "w")
+    f.write("\n".join(val))
+    f.close()
+
+
 if __name__ == "__main__":
     # filename = "/home/chrizandr/sports/detection_exp/annotations/"
     # get_scaled_annotations_PVOC(filename, (1024, 1024))
     # matfile = "/home/chris/sports/SoccerPlayerDetection_bmvc17_v1/annotation_2.mat"
     # get_scaled_annotations_person(matfile, (416, 416))
-    format_annotations("/home/chrizandr/sports/SoccerPlayerDetection_bmvc17_v1/annotation_2.mat",
-                       "/home/chrizandr/sports/train/annotations/")
+    # format_annotations("/home/chrizandr/sports/SoccerPlayerDetection_bmvc17_v1/annotation_2.mat",
+    #                    "/home/chrizandr/sports/train/labels/")
+    train_val_split("/home/chrizandr/sports/train/images/")
