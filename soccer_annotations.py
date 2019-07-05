@@ -7,7 +7,7 @@ import xml.etree.ElementTree as ET
 from scipy.io import loadmat
 
 
-def format_annotations(file, outfolder, new_size=(1024, 1024), prefix="D1_",):
+def format_annotations(file, outfolder, new_size=(1024, 1024), prefix="D2_",):
     """Format annotation and write to file."""
     width = 1280
     height = 720
@@ -96,5 +96,5 @@ if __name__ == "__main__":
     # get_scaled_annotations_PVOC(filename, (1024, 1024))
     # matfile = "/home/chris/sports/SoccerPlayerDetection_bmvc17_v1/annotation_2.mat"
     # get_scaled_annotations_person(matfile, (416, 416))
-    format_annotations("/home/chrizandr/sports/SoccerPlayerDetection_bmvc17_v1/annotation_1.mat",
+    format_annotations("/home/chrizandr/sports/SoccerPlayerDetection_bmvc17_v1/annotation_2.mat",
                        "/home/chrizandr/sports/train/annotations/")
