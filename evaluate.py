@@ -57,7 +57,7 @@ def evaluate_PVOC(output_dir, data_dir, annotation_dir, overlap=0.5, filter_str1
             continue
         if f not in output_imgs:
             aps.append(0)
-            print(f, f not in output_imgs)
+            # print(f, f not in output_imgs)
         else:
             preds, conf = read_output_file(os.path.join(output_dir, f + ".txt"))
             target_cls = np.zeros(preds.shape[0])
@@ -124,8 +124,9 @@ if __name__ == "__main__":
     output_dir = "output/"
     annotation_dir = "/home/chrizandr/sports/detection_exp/annotations/"
 
-    range = [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
+    # range = [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
     # range = [0.5]
+    range = [0.75]
 
     blue = []
     red = []
@@ -135,6 +136,10 @@ if __name__ == "__main__":
 
     view_keys = ["top_in", "top_out", "ground_in", "ground_out"]
     str_keys = ["fb", "fa", "ps", "bm"]
+
+    # Total AP
+    ap = map_voc_range(output_dir, data_dir, annotation_dir, range)
+    print("Total:", ap)
 
     # view wise
     for k in view_keys:
