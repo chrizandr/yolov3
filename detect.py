@@ -76,10 +76,9 @@ def detect(
                     if classes[int(cls)] == "person":
                         with open(save_path + '.txt', 'a') as file:
                             file.write(('%g ' * 6 + '\n') % (*xyxy, cls, conf))
-
-                # Add bbox to the image
-                label = '%s %.2f' % (classes[int(cls)], conf)
-                plot_one_box(xyxy, im0, label=label, color=colors[int(cls)])
+                        # Add bbox to the image
+                        label = '%s %.2f' % (classes[int(cls)], conf)
+                        plot_one_box(xyxy, im0, label=label, color=colors[int(cls)])
 
         print('Done. (%.3fs)' % (time.time() - t))
 
@@ -126,7 +125,7 @@ if __name__ == '__main__':
             img_size=opt.img_size,
             conf_thres=opt.conf_thres,
             nms_thres=opt.nms_thres,
-            save_images=False,
+            save_images=True,
             save_txt=True
         )
-python3 detect.py --weights weights/latest.pt --images ~/sports/detection_exp/rescaled/
+# python3 detect.py --weights weights/yolov3-spp.pt --images ~/sports/detection_exp/rescaled/
