@@ -129,4 +129,4 @@ if __name__ == '__main__':
             save_images=False,
             save_txt=True
         )
-# python3 detect.py --cfg cfg/yolov3.cfg --weights ~/sports/yolov3.weights --images ~/sports/detection_exp/rescaled/
+python3 detect.py --weights weights/latest.pt --images ~/sports/detection_exp/rescaled/
