@@ -61,11 +61,14 @@ def evaluate_PVOC(output_dir, data_dir, annotation_dir, overlap=0.5, filter_str1
             # print(f, f not in output_imgs)
         else:
             preds, conf = read_output_file(os.path.join(output_dir, f + ".txt"))
-            target_cls = np.zeros(preds.shape[0])
-            pred_cls = np.zeros(preds.shape[0])
-            tps = match_annotations(preds, annotation, overlap)
-            p, r, ap, f1, _ = utils.ap_per_class(tps, conf, pred_cls, target_cls)
-            aps.append(ap[0])
+            if len(preds) == 0:
+                aps.append(0)
+            else:
+                target_cls = np.zeros(preds.shape[0])
+                pred_cls = np.zeros(preds.shape[0])
+                tps = match_annotations(preds, annotation, overlap)
+                p, r, ap, f1, _ = utils.ap_per_class(tps, conf, pred_cls, target_cls)
+                aps.append(ap[0])
     mean_ap = sum(aps) / len(aps)
     return mean_ap
 
@@ -122,12 +125,12 @@ def mark_detection(img_file, output, annotation, output_dir):
 
 if __name__ == "__main__":
     data_dir = "/home/chrizandr/sports/detection_exp/annotated/"
-    output_dir = "output/"
+    output_dir = "res101_pascal_out/"
     annotation_dir = "/home/chrizandr/sports/detection_exp/annotations/"
 
     # range = [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
-    # range = [0.5]
-    range = [0.75]
+    range = [0.5]
+    # range = [0.25]
 
     blue = []
     red = []

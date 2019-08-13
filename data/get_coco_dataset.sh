@@ -4,11 +4,10 @@
 # Clone COCO API
 git clone https://github.com/pdollar/coco && cd coco
                     
-# Download Images
-mkdir images && cd images
-wget -c https://pjreddie.com/media/files/train2014.zip
-wget -c https://pjreddie.com/media/files/val2014.zip
+
+=======
 #
+>>>>>>> 15965098564c22e5009d0adbdf73f989a7142ef2
 # Unzip
 unzip -q train2014.zip
 unzip -q val2014.zip
