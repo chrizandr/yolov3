@@ -27,6 +27,7 @@ def evaluate_person(output_dir, data_dir, annotation_file, overlap=0.75):
     """Evaluate output for the player data."""
     files = os.listdir(data_dir)
     output_files = os.listdir(output_dir)
+    output_files = [x for x in output_files if x.endswith(".txt")]
     output_imgs = [x.strip(".txt") for x in output_files]
     annotations = get_scaled_annotations_person(annotation_file)
     correct = 0

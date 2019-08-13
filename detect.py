@@ -50,6 +50,7 @@ def detect(
     colors = [[random.randint(0, 255) for _ in range(3)] for _ in range(len(classes))]
 
     for i, (path, img, im0, vid_cap) in enumerate(dataloader):
+        person_flag = False
         t = time.time()
         save_path = str(Path(output) / Path(path).name)
 
@@ -71,14 +72,16 @@ def detect(
                 print('%g %ss' % (n, classes[int(c)]), end=', ')
 
             # Draw bounding boxes and labels of detections
+
             for *xyxy, conf, cls_conf, cls in detections:
                 if save_txt:  # Write to file
                     if classes[int(cls)] == "person":
+                        person_flag = True
                         with open(save_path + '.txt', 'a') as file:
                             file.write(('%g ' * 6 + '\n') % (*xyxy, cls, conf))
                         # Add bbox to the image
                         label = '%s %.2f' % (classes[int(cls)], conf)
-                        plot_one_box(xyxy, im0, label=label, color=colors[int(cls)])
+                        plot_one_box(xyxy, im0, label=label, color=(0, 0, 255))
 
         print('Done. (%.3fs)' % (time.time() - t))
 
@@ -98,7 +101,8 @@ def detect(
                 vid_writer.write(im0)
 
             else:
-                cv2.imwrite(save_path, im0)
+                if person_flag:
+                    cv2.imwrite(save_path, im0)
 
     if save_images and platform == 'darwin':  # macos
         os.system('open ' + output + ' ' + save_path)
