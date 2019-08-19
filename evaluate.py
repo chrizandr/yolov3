@@ -23,34 +23,13 @@ def read_output_file(filename):
     return np.array(annotations), np.array(confs)
 
 
-def evaluate_person(output_dir, data_dir, annotation_file, overlap=0.75):
-    """Evaluate output for the player data."""
-    files = os.listdir(data_dir)
-    output_files = os.listdir(output_dir)
-    output_files = [x for x in output_files if x.endswith(".txt")]
-    output_imgs = [x.strip(".txt") for x in output_files]
-    annotations = get_scaled_annotations_person(annotation_file)
-    correct = 0
-    total = 0
-    for f in files:
-        annotation = annotations[f]
-        total = total + annotation.shape[0]
-        if f in output_imgs:
-            output = read_output_file(os.path.join(output_dir, f + ".txt"))
-            count = match_annotations(output, annotation, overlap)
-            if count == annotation.shape[0]:
-                output_folder = "/home/chris/sports/output/player/good_detection"
-                mark_ball(os.path.join(data_dir, f), output, annotation, output_folder)
-            correct += count
-    return float(correct)/total * 100
-
-
-def evaluate_PVOC(output_dir, data_dir, annotation_dir, overlap=0.5, filter_str1="", filter_str2=""):
+def evaluate(output_dir, data_dir, annotation_dir, size, overlap=0.5, filter_str1="", filter_str2=""):
     """Evaluate output for the ball data."""
     files = os.listdir(data_dir)
     output_files = os.listdir(output_dir)
+    output_files = [x for x in output_files if x.endswith(".txt")]
     output_imgs = [os.path.splitext(x)[0] for x in output_files]
-    annotations = get_scaled_annotations_PVOC(annotation_dir)
+    annotations = get_scaled_annotations_PVOC(annotation_dir, size)
     aps = []
     for f in files:
         annotation = annotations[f]
@@ -73,13 +52,14 @@ def evaluate_PVOC(output_dir, data_dir, annotation_dir, overlap=0.5, filter_str1
     return mean_ap
 
 
-def map_voc_range(output_dir, data_dir, annotation_dir,  range=[0.5], filter_str1="", filter_str2=""):
+def map_voc_range(output_dir, data_dir, annotation_dir,  range=[0.5], filter_str1="", filter_str2="", size=(1024, 1024)):
     """Find AP@[.5:.95]."""
     assert len(range) > 0
     maps = []
     for r in range:
-        map = evaluate_PVOC(output_dir, data_dir, annotation_dir, overlap=r,
-                            filter_str1=filter_str1, filter_str2=filter_str2)
+        map = evaluate(output_dir, data_dir, annotation_dir, overlap=r,
+                       filter_str1=filter_str1, filter_str2=filter_str2,
+                       size=size)
         maps.append(map)
     return sum(maps) / len(maps)
 
@@ -125,8 +105,10 @@ def mark_detection(img_file, output, annotation, output_dir):
 
 if __name__ == "__main__":
     data_dir = "/home/chrizandr/sports/detection_exp/annotated/"
-    output_dir = "res101_pascal_out/"
     annotation_dir = "/home/chrizandr/sports/detection_exp/annotations/"
+
+    output_dir = "res101_pascal_out/"
+    size = (1024, 1024)
 
     # range = [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
     range = [0.5]
@@ -194,7 +176,3 @@ if __name__ == "__main__":
         print("white: ", sum(white)/len(white))
         print("green: ", sum(green)/len(green))
         print("yellow: ", sum(yellow)/len(yellow))
-
-
-
-    pdb.set_trace()
