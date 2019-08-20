@@ -107,12 +107,13 @@ if __name__ == "__main__":
     data_dir = "/home/chrizandr/sports/detection_exp/annotated/"
     annotation_dir = "/home/chrizandr/sports/detection_exp/annotations/"
 
-    output_dir = "/home/chrizandr/detection/res101_pascal_out/"
-    size = (720, 1280)
+    output_dir = "/home/chrizandr/detection/yolo/"
+    # h, w
+    size = (1024, 1024)
 
-    # range = [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
-    range = [0.5]
-    # range = [0.25]
+    # range = [0.5]
+    # range = [0.75]
+    range = [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
 
     blue = []
     red = []
