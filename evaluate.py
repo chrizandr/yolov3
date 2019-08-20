@@ -43,7 +43,7 @@ def evaluate(output_dir, data_dir, annotation_dir, size, overlap=0.5, filter_str
             if len(preds) == 0:
                 aps.append(0)
             else:
-                target_cls = np.zeros(preds.shape[0])
+                target_cls = np.zeros(annotation.shape[0])
                 pred_cls = np.zeros(preds.shape[0])
                 tps = match_annotations(preds, annotation, overlap)
                 p, r, ap, f1, _ = utils.ap_per_class(tps, conf, pred_cls, target_cls)
@@ -107,8 +107,8 @@ if __name__ == "__main__":
     data_dir = "/home/chrizandr/sports/detection_exp/annotated/"
     annotation_dir = "/home/chrizandr/sports/detection_exp/annotations/"
 
-    output_dir = "res101_pascal_out/"
-    size = (1024, 1024)
+    output_dir = "/home/chrizandr/detection/res101_pascal_out/"
+    size = (720, 1280)
 
     # range = [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
     range = [0.5]
