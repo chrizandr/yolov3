@@ -108,10 +108,6 @@ if __name__ == "__main__":
     annotation_dir = "/home/chrizandr/sports/detection_exp/annotations/"
 
     output_dir = "/home/chrizandr/detection/res101_pascal_out/"
-<<<<<<< HEAD
-=======
-    # Should be (h,w)
->>>>>>> 6c0da6b2c315010c15ddfb19ccb2004820f1ab04
     size = (720, 1280)
 
     # range = [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
