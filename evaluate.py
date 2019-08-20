@@ -108,6 +108,10 @@ if __name__ == "__main__":
     annotation_dir = "/home/chrizandr/sports/detection_exp/annotations/"
 
     output_dir = "/home/chrizandr/detection/res101_pascal_out/"
+<<<<<<< HEAD
+=======
+    # Should be (h,w)
+>>>>>>> 6c0da6b2c315010c15ddfb19ccb2004820f1ab04
     size = (720, 1280)
 
     # range = [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
@@ -124,17 +128,17 @@ if __name__ == "__main__":
     str_keys = ["fb", "fa", "ps", "bm"]
 
     # Total AP
-    ap = map_voc_range(output_dir, data_dir, annotation_dir, range)
+    ap = map_voc_range(output_dir, data_dir, annotation_dir, range, size=size)
     print("Total:", ap)
 
     # view wise
     for k in view_keys:
-        ap = map_voc_range(output_dir, data_dir, annotation_dir, range, filter_str1=k)
+        ap = map_voc_range(output_dir, data_dir, annotation_dir, range, filter_str1=k, size=size)
         print(k + ":", ap)
 
     # Color wise
     for k in str_keys:
-        ap = map_voc_range(output_dir, data_dir, annotation_dir, range, filter_str1=k)
+        ap = map_voc_range(output_dir, data_dir, annotation_dir, range, filter_str1=k, size=size)
         if k == "fb":
             blue.append(ap)
             red.append(ap)
@@ -157,7 +161,7 @@ if __name__ == "__main__":
     # Color and view wise
     for k1 in view_keys:
         for k in str_keys:
-            ap = map_voc_range(output_dir, data_dir, annotation_dir, range, filter_str1=k, filter_str2=k1)
+            ap = map_voc_range(output_dir, data_dir, annotation_dir, range, filter_str1=k, size=size, filter_str2=k1)
             if k == "fb":
                 blue.append(ap)
                 red.append(ap)
