@@ -1,6 +1,7 @@
 import os
 import pdb
 import cv2
+from soccer_annotations import get_scaled_annotations_PVOC
 
 
 include_list = ['Javier_MAscherano', 'Ezequiel_Garay', 'Lionel_Messi', 'Rodrigo_Palacio', 'Fernando_Gago',
@@ -11,7 +12,7 @@ include_list = ['Javier_MAscherano', 'Ezequiel_Garay', 'Lionel_Messi', 'Rodrigo_
                 'Miroslav_Klose', 'Ezequiel_Lavezzi', 'Gonzalo_Huguain']
 
 
-def process_annotation(filename, prefix="", fcode="", output_folder=""):
+def process_annotation_vijay(filename, prefix="", fcode="", output_folder=""):
     f = open(filename, "r")
     annotations = {}
 
@@ -66,7 +67,7 @@ def process_images(image_dir, new_size, output_dir, valid_files=[], fcode=""):
         out_file = os.path.join(output_dir, fcode + "_" + f)
         if len(valid_files) != 0 and out_file not in valid_files:
             continue
-        if not f.endswith(".jpg"):
+        if not f.endswith(".jpg") and not f.endswith(".png"):
             continue
 
         img = cv2.imread(img_path)
@@ -77,22 +78,35 @@ def process_images(image_dir, new_size, output_dir, valid_files=[], fcode=""):
             print("[Error] empty:", os.path.join(image_dir, f))
 
 
-if __name__ == "__main__":
-    annot_folder = "/home/chris/Downloads/soccer/soccer/annot/"
-    img_folder = "/home/chris/Downloads/soccer/soccer/frames/"
-
-    annot_out = "/home/chris/Downloads/soccer/soccer/labels/"
-    img_out = "/home/chris/Downloads/soccer/soccer/images/"
-
-    files = os.listdir(annot_folder)
+def convert_annotation_xml_to_txt(annotation_folder, output_dir, new_size=(1024, 1024)):
+    files = os.listdir(annotation_folder)
+    annotations = get_scaled_annotations_PVOC(annotation_folder, new_size)
     for f in files:
-        filename = os.path.join(annot_folder, f)
-        fcode = f.strip(".txt").strip("clip")
-        print("Processing clip annotations", fcode)
-        valid_files = process_annotation(filename, img_folder, fcode, annot_out)
-        valid_files = [x.replace(annot_out, img_out).replace(".txt", ".jpg") for x in valid_files]
-        print("Processing clip images", fcode)
-        process_images(os.path.join(img_folder, fcode), (1024, 1024), img_out, valid_files, fcode)
+        if f.endswith(".xml"):
+            img_name = f.replace(".xml", ".png")
+            annotation = annotations[img_name]
+            out = open(os.path.join(output_dir, img_name + ".txt"), "w")
+            out_str = " ".join(["0"] + [])
+            pdb.set_trace()
+
+
+if __name__ == "__main__":
+    # annot_folder = "/home/chris/Downloads/soccer/soccer/annot/"
+    # img_folder = "/home/chris/Downloads/soccer/soccer/frames/"
+    #
+    # annot_out = "/home/chris/Downloads/soccer/soccer/labels/"
+    # img_out = "/home/chris/Downloads/soccer/soccer/images/"
+
+    # files = os.listdir(annot_folder)
+    # for f in files:
+    #     filename = os.path.join(annot_folder, f)
+    #     fcode = f.strip(".txt").strip("clip")
+    #     print("Processing clip annotations", fcode)
+    #     valid_files = process_annotation_vijay(filename, img_folder, fcode, annot_out)
+    #     valid_files = [x.replace(annot_out, img_out).replace(".txt", ".jpg") for x in valid_files]
+    #     print("Processing clip images", fcode)
+    #     process_images(os.path.join(img_folder, fcode), (1024, 1024), img_out, valid_files, fcode)
+    #
 
     # filename = os.path.join(annot_folder, "clip1.txt")
     # fcode = "1"
@@ -101,3 +115,7 @@ if __name__ == "__main__":
     # print("Processing clip images", fcode)
     # process_images(os.path.join(img_folder, fcode), (1024, 1024), img_out, fcode)
     # pdb.set_trace()
+
+    annot_folder = "/home/chrizandr/sports/detection_exp/annotations"
+    output_folder = "/home/chrizandr/sports/detection_exp/labels"
+    convert_annotation_xml_to_txt(annot_folder, output_folder, (1024, 1024))
