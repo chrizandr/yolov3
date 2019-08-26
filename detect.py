@@ -132,4 +132,6 @@ if __name__ == '__main__':
             save_images=True,
             save_txt=True
         )
+
 # python3 detect.py --weights weights/yolov3-spp.pt --images ~/sports/detection_exp/rescaled/
+# python3 detect.py --weights weights/best.pt --images ~/sports/detection_exp/rescaled/
