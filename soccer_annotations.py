@@ -47,6 +47,10 @@ def get_scaled_annotations_PVOC(annotation_dir, new_size=(1024, 1024)):
             pdb.set_trace()
 
         as_ = root.findall("object")
+        size = root.findall("size")[0]
+        width = int(size.findall("width")[0].text)
+        height = int(size.findall("height")[0].text)
+
         for annotation in as_:
             bbox = annotation.findall("bndbox")[0]
             xmin = int(bbox.findall("xmin")[0].text)
@@ -54,17 +58,13 @@ def get_scaled_annotations_PVOC(annotation_dir, new_size=(1024, 1024)):
             xmax = int(bbox.findall("xmax")[0].text)
             ymax = int(bbox.findall("ymax")[0].text)
 
-            size = root.findall("size")[0]
-            width = int(size.findall("width")[0].text)
-            height = int(size.findall("height")[0].text)
-
             new_h, new_w = new_size
             new_h, new_w = float(new_h), float(new_w)
             ymin = int(ymin/(height/new_h))
             ymax = int(ymax/(height/new_h))
             xmin = int(xmin/(width/new_w))
             xmax = int(xmax/(width/new_w))
-            name = f.strip(".xml") + ".png"
+            name = f.replace(".xml", ".png")
             if name in annotations:
                 annotations[name] = np.vstack((annotations[name], [xmin, ymin, xmax, ymax]))
             else:

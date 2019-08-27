@@ -120,6 +120,6 @@ if __name__ == "__main__":
     # process_images(os.path.join(img_folder, fcode), (1024, 1024), img_out, fcode)
     # pdb.set_trace()
 
-    annot_folder = "/home/chrizandr/sports/detection_exp/annotations"
-    output_folder = "/home/chrizandr/sports/detection_exp/labels"
-    convert_annotation_xml_to_txt(annot_folder, output_folder, (1024, 1024))
+    # annot_folder = "/home/chrizandr/sports/detection_exp/annotations"
+    # output_folder = "/home/chrizandr/sports/detection_exp/labels"
+    # convert_annotation_xml_to_txt(annot_folder, output_folder, (1024, 1024))
