@@ -85,9 +85,13 @@ def convert_annotation_xml_to_txt(annotation_folder, output_dir, new_size=(1024,
         if f.endswith(".xml"):
             img_name = f.replace(".xml", ".png")
             annotation = annotations[img_name]
+            annot = [convert_to_yolo_annot(x, new_size) for x in annotation]
             out = open(os.path.join(output_dir, img_name + ".txt"), "w")
-            out_str = " ".join(["0"] + [])
-            pdb.set_trace()
+            for a in annot:
+                out_str = "0 " + " ".join([str(x) for x in a]) + "\n"
+                out.write(out_str)
+            out.close()
+        print("Processed", f)
 
 
 if __name__ == "__main__":

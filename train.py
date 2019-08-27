@@ -17,6 +17,7 @@ def train(
         resume=False,
         epochs=273,  # 500200 batches at bs 64, dataset length 117263
         batch_size=16,
+        save_per_epoch=10,
         accumulate=1,
         multi_scale=False,
         freeze_backbone=False,
@@ -54,7 +55,9 @@ def train(
             chkpt = torch.load(weights + 'yolov3-spp.pt', map_location=device)
             model.load_state_dict({k: v for k, v in chkpt['model'].items() if v.numel() > 1 and v.shape[0] != 255},
                                   strict=False)
-            for p in model.parameters():
+            for i, p in enumerate(model.parameters()):
+                if p.shape[0] == nf:
+                    print("Layer", i, "being trained")
                 p.requires_grad = True if p.shape[0] == nf else False
 
         else:  # resume from latest.pt
@@ -209,7 +212,7 @@ def train(
                 torch.save(chkpt, best)
 
             # Save backup every 10 epochs (optional)
-            if epoch > 0 and epoch % 10 == 0:
+            if epoch > 0 and epoch % save_per_epoch == 0:
                 torch.save(chkpt, weights + 'backup%g.pt' % epoch)
 
             # Delete checkpoint
@@ -219,6 +222,7 @@ def train(
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--epochs', type=int, default=273, help='number of epochs')
+    parser.add_argument('--save_per_epoch', type=int, default=10, help='save after number epochs')
     parser.add_argument('--batch-size', type=int, default=16, help='size of each image batch')
     parser.add_argument('--accumulate', type=int, default=1, help='accumulate gradient x batches before optimizing')
     parser.add_argument('--cfg', type=str, default='cfg/yolov3-spp.cfg', help='cfg file path')
@@ -248,5 +252,6 @@ if __name__ == '__main__':
         batch_size=opt.batch_size,
         accumulate=opt.accumulate,
         multi_scale=opt.multi_scale,
-        num_workers=opt.num_workers
+        num_workers=opt.num_workers,
+        save_per_epoch=opt.save_per_epoch
     )

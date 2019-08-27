@@ -48,6 +48,8 @@ def evaluate(output_dir, data_dir, annotation_dir, size, overlap=0.5, filter_str
                 tps = match_annotations(preds, annotation, overlap)
                 p, r, ap, f1, _ = utils.ap_per_class(tps, conf, pred_cls, target_cls)
                 aps.append(ap[0])
+    if len(aps) == 0:
+        return 0
     mean_ap = sum(aps) / len(aps)
     return mean_ap
 
@@ -104,7 +106,7 @@ def mark_detection(img_file, output, annotation, output_dir):
 
 
 if __name__ == "__main__":
-    data_dir = "/home/chrizandr/sports/detection_exp/annotated/"
+    data_dir = "test/"
     annotation_dir = "/home/chrizandr/sports/detection_exp/annotations/"
 
     output_dir = "output/"
