@@ -43,12 +43,12 @@ def split_training_data(data_folder, prefix="", split=0.7):
     train = files[0: split_idx]
     val = files[split_idx::]
 
-    with open("train.txt", "w") as f:
+    with open("train2.txt", "w") as f:
         f.write("\n".join(train))
-    with open("val.txt", "w") as f:
+    with open("val2.txt", "w") as f:
         f.write("\n".join(val))
 
 
 if __name__ == "__main__":
-    data_folder = "/ssd_scratch/cvit/chrizandr/images/"
+    data_folder = "/ssd_scratch/cvit/chrizandr/vijay_player_data/images/"
     split_training_data(data_folder)
