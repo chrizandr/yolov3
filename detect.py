@@ -114,7 +114,7 @@ if __name__ == '__main__':
     parser.add_argument('--data-cfg', type=str, default='data/coco.data', help='coco.data file path')
     parser.add_argument('--weights', type=str, default='weights/yolov3-spp.weights', help='path to weights file')
     parser.add_argument('--images', type=str, default='data/samples', help='path to images')
-    parser.add_argument('--img-size', type=int, default=1024, help='size of each image dimension')
+    parser.add_argument('--img-size', type=int, default=416, help='size of each image dimension')
     parser.add_argument('--conf-thres', type=float, default=0.5, help='object confidence threshold')
     parser.add_argument('--nms-thres', type=float, default=0.5, help='iou threshold for non-maximum suppression')
     opt = parser.parse_args()
@@ -133,5 +133,5 @@ if __name__ == '__main__':
             save_txt=True
         )
 
-# python3 detect.py --weights weights/yolov3-spp.pt --images ~/sports/detection_exp/rescaled/
+# python3 detect.py --weights weights/yolov3-spp.pt --images /home/chrizandr/sports/test/rescaled
 # python3 detect.py --weights weights/best.pt --images ~/sports/detection_exp/rescaled/
