@@ -134,4 +134,4 @@ if __name__ == '__main__':
         )
 
 # python3 detect.py --weights weights/yolov3-spp.pt --images /home/chrizandr/sports/test/rescaled
-# python3 detect.py --weights weights/best.pt --images ~/sports/detection_exp/rescaled/
+# python3 detect.py --weights weights/best.pt --images ~/sports/detection_exp/images/

@@ -106,12 +106,12 @@ def mark_detection(img_file, output, annotation, output_dir):
 
 
 if __name__ == "__main__":
-    data_dir = "/home/chrizandr/sports/test/images/"
-    annotation_dir = "/home/chrizandr/sports/test/annotations/"
+    data_dir = "/home/chrizandr/sports/detection_exp/images/"
+    annotation_dir = "/home/chrizandr/sports/detection_exp/annotations/"
 
     output_dir = "output/"
     # h, w
-    size = (720, 1280)
+    size = (1024, 1024)
 
     range = [0.5]
     # range = [0.75]

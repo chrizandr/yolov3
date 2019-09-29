@@ -43,7 +43,7 @@ def train(
     model = Darknet(cfg, img_size).to(device)
 
     # Optimizer
-    lr0 = 0.001  # initial learning rate
+    lr0 = 0.0001  # initial learning rate
     optimizer = torch.optim.SGD(model.parameters(), lr=lr0, momentum=0.9, weight_decay=0.0005)
 
     cutoff = -1  # backbone reaches to cutoff layer
