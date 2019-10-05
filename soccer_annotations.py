@@ -35,7 +35,7 @@ def format_annotations(file, outfolder, new_size=(1024, 1024), prefix="D2_",):
         f.close()
 
 
-def get_scaled_annotations_PVOC(annotation_dir, new_size=(1024, 1024)):
+def get_scaled_annotations_PVOC(annotation_dir, new_size=None):
     """Read and scale annotations based on new image size."""
     files = os.listdir(annotation_dir)
     annotations = dict()
@@ -53,17 +53,19 @@ def get_scaled_annotations_PVOC(annotation_dir, new_size=(1024, 1024)):
 
         for annotation in as_:
             bbox = annotation.findall("bndbox")[0]
-            xmin = int(bbox.findall("xmin")[0].text)
-            ymin = int(bbox.findall("ymin")[0].text)
-            xmax = int(bbox.findall("xmax")[0].text)
-            ymax = int(bbox.findall("ymax")[0].text)
+            xmin = float(bbox.findall("xmin")[0].text)
+            ymin = float(bbox.findall("ymin")[0].text)
+            xmax = float(bbox.findall("xmax")[0].text)
+            ymax = float(bbox.findall("ymax")[0].text)
 
-            new_h, new_w = new_size
-            new_h, new_w = float(new_h), float(new_w)
-            ymin = int(ymin/(height/new_h))
-            ymax = int(ymax/(height/new_h))
-            xmin = int(xmin/(width/new_w))
-            xmax = int(xmax/(width/new_w))
+            if new_size:
+                new_h, new_w = new_size
+                new_h, new_w = float(new_h), float(new_w)
+                ymin = float(ymin/(height/new_h))
+                ymax = float(ymax/(height/new_h))
+                xmin = float(xmin/(width/new_w))
+                xmax = float(xmax/(width/new_w))
+
             name = f.replace(".xml", ".png")
             if name in annotations:
                 annotations[name] = np.vstack((annotations[name], [xmin, ymin, xmax, ymax]))

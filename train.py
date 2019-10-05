@@ -43,7 +43,7 @@ def train(
     model = Darknet(cfg, img_size).to(device)
 
     # Optimizer
-    lr0 = 0.001  # initial learning rate
+    lr0 = 0.0001  # initial learning rate
     optimizer = torch.optim.SGD(model.parameters(), lr=lr0, momentum=0.9, weight_decay=0.0005)
 
     cutoff = -1  # backbone reaches to cutoff layer
@@ -114,6 +114,7 @@ def train(
     os.remove('train_batch0.jpg') if os.path.exists('train_batch0.jpg') else None
     os.remove('test_batch0.jpg') if os.path.exists('test_batch0.jpg') else None
     for epoch in range(start_epoch, epochs):
+        avg_metrics = np.array([0, 0, 0, 0, 0], dtype=np.float)
         model.train()
         print(('\n%8s%12s' + '%10s' * 7) % ('Epoch', 'Batch', 'xy', 'wh', 'conf', 'cls', 'total', 'nTargets', 'time'))
 
@@ -121,7 +122,7 @@ def train(
         scheduler.step()
 
         # Freeze backbone at epoch 0, unfreeze at epoch 1
-        if freeze_backbone and epoch < 2:
+        if freeze_backbone:
             for name, p in model.named_parameters():
                 if int(name.split('.')[1]) < cutoff:  # if layer < 75
                     p.requires_grad = False if epoch == 0 else True
@@ -173,6 +174,7 @@ def train(
                 '%g/%g' % (epoch, epochs - 1), '%g/%g' % (i, nB - 1),
                 mloss['xy'], mloss['wh'], mloss['conf'], mloss['cls'],
                 mloss['total'], nt, time.time() - t)
+            avg_metrics += [mloss['xy'], mloss['wh'], mloss['conf'], mloss['cls'], mloss['total']]
             t = time.time()
             print(s)
 
@@ -187,7 +189,8 @@ def train(
 
         # Write epoch results
         with open('results.txt', 'a') as file:
-            file.write(s + '%11.3g' * 5 % results + '\n')  # P, R, mAP, F1, test_loss
+            file.write("Train " + "".join(['%11.3g' % x for x in avg_metrics/(i+1)]) + "\n")
+            file.write("Val " + s + '%11.3g' * 5 % results + '\n')  # P, R, mAP, F1, test_loss
 
         # Update best loss
         test_loss = results[4]
@@ -230,6 +233,7 @@ if __name__ == '__main__':
     parser.add_argument('--multi-scale', action='store_true', help='random image sizes per batch 320 - 608')
     parser.add_argument('--img-size', type=int, default=416, help='pixels')
     parser.add_argument('--resume', action='store_true', help='resume training flag')
+    parser.add_argument('--freeze', action='store_true', help='freeze backbone during training')
     parser.add_argument('--transfer', action='store_true', help='transfer learning flag')
     parser.add_argument('--num-workers', type=int, default=4, help='number of Pytorch DataLoader workers')
     parser.add_argument('--dist-url', default='tcp://127.0.0.1:9999', type=str, help='distributed training init method')
@@ -253,5 +257,6 @@ if __name__ == '__main__':
         accumulate=opt.accumulate,
         multi_scale=opt.multi_scale,
         num_workers=opt.num_workers,
-        save_per_epoch=opt.save_per_epoch
+        save_per_epoch=opt.save_per_epoch,
+        freeze_backbone=opt.freeze
     )

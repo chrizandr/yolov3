@@ -106,7 +106,7 @@ def mark_detection(img_file, output, annotation, output_dir):
 
 
 if __name__ == "__main__":
-    data_dir = "test/"
+    data_dir = "/home/chrizandr/sports/detection_exp/images/"
     annotation_dir = "/home/chrizandr/sports/detection_exp/annotations/"
 
     output_dir = "output/"
@@ -131,51 +131,51 @@ if __name__ == "__main__":
     print("Total:", ap)
 
     # view wise
-    for k in view_keys:
-        ap = map_voc_range(output_dir, data_dir, annotation_dir, range, filter_str1=k, size=size)
-        print(k + ":", ap)
-
-    # Color wise
-    for k in str_keys:
-        ap = map_voc_range(output_dir, data_dir, annotation_dir, range, filter_str1=k, size=size)
-        if k == "fb":
-            blue.append(ap)
-            red.append(ap)
-        if k == "ps":
-            red.append(ap)
-            white.append(ap)
-        if k == "fa":
-            blue.append(ap)
-            white.append(ap)
-        if k == "bm":
-            green.append(ap)
-            yellow.append(ap)
-
-    print("blue: ", sum(blue)/len(blue))
-    print("red: ", sum(red)/len(red))
-    print("white: ", sum(white)/len(white))
-    print("green: ", sum(green)/len(green))
-    print("yellow: ", sum(yellow)/len(yellow))
-
-    # Color and view wise
-    for k1 in view_keys:
-        for k in str_keys:
-            ap = map_voc_range(output_dir, data_dir, annotation_dir, range, filter_str1=k, size=size, filter_str2=k1)
-            if k == "fb":
-                blue.append(ap)
-                red.append(ap)
-            if k == "ps":
-                red.append(ap)
-                white.append(ap)
-            if k == "fa":
-                blue.append(ap)
-                white.append(ap)
-            if k == "bm":
-                green.append(ap)
-                yellow.append(ap)
-        print("------", k1, "------")
-        print("blue: ", sum(blue)/len(blue))
-        print("red: ", sum(red)/len(red))
-        print("white: ", sum(white)/len(white))
-        print("green: ", sum(green)/len(green))
-        print("yellow: ", sum(yellow)/len(yellow))
+    # for k in view_keys:
+    #     ap = map_voc_range(output_dir, data_dir, annotation_dir, range, filter_str1=k, size=size)
+    #     print(k + ":", ap)
+    #
+    # # Color wise
+    # for k in str_keys:
+    #     ap = map_voc_range(output_dir, data_dir, annotation_dir, range, filter_str1=k, size=size)
+    #     if k == "fb":
+    #         blue.append(ap)
+    #         red.append(ap)
+    #     if k == "ps":
+    #         red.append(ap)
+    #         white.append(ap)
+    #     if k == "fa":
+    #         blue.append(ap)
+    #         white.append(ap)
+    #     if k == "bm":
+    #         green.append(ap)
+    #         yellow.append(ap)
+    #
+    # print("blue: ", sum(blue)/len(blue))
+    # print("red: ", sum(red)/len(red))
+    # print("white: ", sum(white)/len(white))
+    # print("green: ", sum(green)/len(green))
+    # print("yellow: ", sum(yellow)/len(yellow))
+    #
+    # # Color and view wise
+    # for k1 in view_keys:
+    #     for k in str_keys:
+    #         ap = map_voc_range(output_dir, data_dir, annotation_dir, range, filter_str1=k, size=size, filter_str2=k1)
+    #         if k == "fb":
+    #             blue.append(ap)
+    #             red.append(ap)
+    #         if k == "ps":
+    #             red.append(ap)
+    #             white.append(ap)
+    #         if k == "fa":
+    #             blue.append(ap)
+    #             white.append(ap)
+    #         if k == "bm":
+    #             green.append(ap)
+    #             yellow.append(ap)
+    #     print("------", k1, "------")
+    #     print("blue: ", sum(blue)/len(blue))
+    #     print("red: ", sum(red)/len(red))
+    #     print("white: ", sum(white)/len(white))
+    #     print("green: ", sum(green)/len(green))
+    #     print("yellow: ", sum(yellow)/len(yellow))
