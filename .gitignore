@@ -15,8 +15,6 @@
 *.json
 *.png
 
-*.cfg
-!cfg/yolov3*.cfg
 
 output/*
 
