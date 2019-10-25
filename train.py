@@ -1,9 +1,9 @@
 import argparse
 import time
-
+import torch
 import torch.distributed as dist
 from torch.utils.data import DataLoader
-
+import pdb
 import test  # Import test.py to get mAP after each epoch
 from models import *
 from utils.datasets import *
@@ -52,9 +52,13 @@ def train(
     nf = int(model.module_defs[model.yolo_layers[0] - 1]['filters'])  # yolo layer size (i.e. 255)
     if resume:  # Load previously saved model
         if transfer:  # Transfer learning
-            chkpt = torch.load(weights + 'yolov3-spp.pt', map_location=device)
-            model.load_state_dict({k: v for k, v in chkpt['model'].items() if v.numel() > 1 and v.shape[0] != 255},
+            chkpt = torch.load(weights + 'yolov3.pt', map_location=device)
+            # model.load_state_dict({k: v for k, v in chkpt['model'].items() if v.numel() > 1 and v.shape[0] != 255},
+            #                       strict=False)
+            model.load_state_dict({k: v for k, v in chkpt['model'].items() if model.state_dict()[k].numel() == v.numel()},
                                   strict=False)
+            # model.load_state_dict(chkpt["model"])
+            pdb.set_trace()
             for i, p in enumerate(model.parameters()):
                 if p.shape[0] == nf:
                     print("Layer", i, "being trained")

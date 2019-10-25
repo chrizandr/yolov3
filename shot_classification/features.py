@@ -15,7 +15,7 @@ def get_SIFT(img):
     return kp, des
 
 
-def compute_features(img_dir, save_individual=False):
+def compute_features(img_dir, save_individual=False, save_folder=""):
     """Compute features for all images."""
     files = os.listdir(img_dir)
     if not save_individual:
@@ -39,15 +39,16 @@ def compute_features(img_dir, save_individual=False):
                 indices = list(range(len(kp)))
                 indices.sort(key=lambda x: kp[x].response, reverse=True)
                 des = des[indices]
-                file = open(os.path.join("/ssd_scratch/cvit/chrizandr/features", f.replace(".png", ".pkl").replace(".jpg", ".pkl")), "wb")
+                file = open(os.path.join(save_folder, f.replace(".png", ".pkl").replace(".jpg", ".pkl")), "wb")
                 pickle.dump(des, file)
                 file.close()
         return None
 
 
 if __name__ == "__main__":
-    images = "/ssd_scratch/cvit/chrizandr/all_data/"
-    descriptors = compute_features(images, save_individual=True)
+    images = "/ssd_scratch/cvit/chrizandr/images/"
+    save_folder = "/ssd_scratch/cvit/chrizandr/features2"
+    descriptors = compute_features(images, save_individual=True, save_folder=save_folder)
     # file = open("features.pkl", "wb")
     # pickle.dump(descriptors, file)
     pdb.set_trace()
