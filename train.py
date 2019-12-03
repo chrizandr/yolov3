@@ -26,8 +26,9 @@ def train(
 
 ):
     weights = 'weights' + os.sep
-    latest = weights + 'latest.pt'
-    best = weights + 'best.pt'
+    latest = weights + 'latest2.pt'
+    best = weights + 'best2.pt'
+    result_file = 'results2.txt'
     device = torch_utils.select_device()
 
     if multi_scale:
@@ -52,13 +53,13 @@ def train(
     nf = int(model.module_defs[model.yolo_layers[0] - 1]['filters'])  # yolo layer size (i.e. 255)
     if resume:  # Load previously saved model
         if transfer:  # Transfer learning
-            chkpt = torch.load(weights + 'yolov3.pt', map_location=device)
+            chkpt = torch.load(weights + 'yolov3-spp.pt', map_location=device)
             # model.load_state_dict({k: v for k, v in chkpt['model'].items() if v.numel() > 1 and v.shape[0] != 255},
             #                       strict=False)
             model.load_state_dict({k: v for k, v in chkpt['model'].items() if model.state_dict()[k].numel() == v.numel()},
                                   strict=False)
-            # model.load_state_dict(chkpt["model"])
-            pdb.set_trace()
+
+            # Train YOLO layers
             for i, p in enumerate(model.parameters()):
                 if p.shape[0] == nf:
                     print("Layer", i, "being trained")
@@ -117,6 +118,13 @@ def train(
     n_burnin = min(round(nB / 5 + 1), 1000)  # burn-in batches
     os.remove('train_batch0.jpg') if os.path.exists('train_batch0.jpg') else None
     os.remove('test_batch0.jpg') if os.path.exists('test_batch0.jpg') else None
+
+    if not freeze_backbone:
+        for name, p in model.named_parameters():
+            if int(name.split('.')[1]) > 100:  # if layer < 75
+                print("Training layer", name)
+                p.requires_grad = True
+
     for epoch in range(start_epoch, epochs):
         avg_metrics = np.array([0, 0, 0, 0, 0], dtype=np.float)
         model.train()
@@ -126,11 +134,6 @@ def train(
         scheduler.step()
 
         # Freeze backbone at epoch 0, unfreeze at epoch 1
-        if freeze_backbone:
-            for name, p in model.named_parameters():
-                if int(name.split('.')[1]) < cutoff:  # if layer < 75
-                    p.requires_grad = False if epoch == 0 else True
-
         mloss = defaultdict(float)  # mean loss
         for i, (imgs, targets, _, _) in enumerate(dataloader):
             imgs = imgs.to(device)
@@ -192,7 +195,7 @@ def train(
             results = test.test(cfg, data_cfg, batch_size=batch_size, img_size=img_size, model=model, conf_thres=0.1)
 
         # Write epoch results
-        with open('results.txt', 'a') as file:
+        with open(result_file, 'a') as file:
             file.write("Train " + "".join(['%11.3g' % x for x in avg_metrics/(i+1)]) + "\n")
             file.write("Val " + s + '%11.3g' * 5 % results + '\n')  # P, R, mAP, F1, test_loss
 
@@ -220,7 +223,7 @@ def train(
 
             # Save backup every 10 epochs (optional)
             if epoch > 0 and epoch % save_per_epoch == 0:
-                torch.save(chkpt, weights + 'backup%g.pt' % epoch)
+                torch.save(chkpt, weights + 'backup2%g.pt' % epoch)
 
             # Delete checkpoint
             del chkpt

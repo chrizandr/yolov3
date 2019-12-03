@@ -12,14 +12,12 @@
 *.mov
 *.MOV
 *.avi
-*.data
 *.json
 *.png
 
 
 output/*
 
-data/*
 !data/samples/zidane.jpg
 !data/coco.names
 !data/coco_paper.names
@@ -28,7 +26,6 @@ data/*
 !data/coco_1*.txt
 
 pycocotools/*
-results*.txt
 gcp_test*.sh
 
 # MATLAB GitIgnore -----------------------------------------------------------------------------------------------------

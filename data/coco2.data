@@ -1,0 +1,6 @@
+classes=80
+train=/home/chrizandr/yolov3/train2.txt
+valid=/home/chrizandr/yolov3/val2.txt
+names=data/coco.names
+backup=backup/
+eval=coco

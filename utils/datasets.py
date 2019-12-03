@@ -4,6 +4,7 @@ import os
 import random
 import shutil
 from pathlib import Path
+import pdb
 
 import cv2
 import numpy as np
@@ -15,10 +16,10 @@ from utils.utils import xyxy2xywh
 
 
 class LoadImages:  # for inference
-    def __init__(self, path, img_size=416):
+    def __init__(self, path, img_size=416, sample_second=False):
         self.height = img_size
         img_formats = ['.jpg', '.jpeg', '.png', '.tif']
-        vid_formats = ['.mov', '.avi', '.mp4']
+        vid_formats = ['.mov', '.avi', '.mp4', '.mkv']
 
         files = []
         if os.path.isdir(path):
@@ -30,6 +31,7 @@ class LoadImages:  # for inference
         videos = [x for x in files if os.path.splitext(x)[-1].lower() in vid_formats]
         nI, nV = len(images), len(videos)
 
+        self.sample_second = sample_second
         self.files = images + videos
         self.nF = nI + nV  # number of files
         self.video_flag = [False] * nI + [True] * nV
@@ -48,11 +50,22 @@ class LoadImages:  # for inference
         if self.count == self.nF:
             raise StopIteration
         path = self.files[self.count]
-
+        frame = 0
         if self.video_flag[self.count]:
             # Read video
             self.mode = 'video'
-            ret_val, img0 = self.cap.read()
+            if self.sample_second:
+                if self.frame % self.fps == 0:
+                    ret_val, img0 = self.cap.read()
+                else:
+                    while(self.frame % self.fps != 0):
+                        ret_val, img0 = self.cap.read()
+                        self.frame += 1
+                    ret_val, img0 = self.cap.read()
+            else:
+                ret_val, img0 = self.cap.read()
+
+            # Frames in video are finished, next video is loaded
             if not ret_val:
                 self.count += 1
                 self.cap.release()
@@ -63,8 +76,9 @@ class LoadImages:  # for inference
                     self.new_video(path)
                     ret_val, img0 = self.cap.read()
 
-            self.frame += 1
+            frame = self.frame
             print('video %g/%g (%g/%g) %s: ' % (self.count + 1, self.nF, self.frame, self.nframes, path), end='')
+            self.frame += 1
 
         else:
             # Read image
@@ -80,14 +94,14 @@ class LoadImages:  # for inference
         img = img[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB
         img = np.ascontiguousarray(img, dtype=np.float32)  # uint8 to float32
         img /= 255.0  # 0 - 255 to 0.0 - 1.0
-
         # cv2.imwrite(path + '.letterbox.jpg', 255 * img.transpose((1, 2, 0))[:, :, ::-1])  # save letterbox image
-        return path, img, img0, self.cap
+        return path, img, img0, self.cap, frame
 
     def new_video(self, path):
         self.frame = 0
         self.cap = cv2.VideoCapture(path)
         self.nframes = int(self.cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        self.fps = int(self.cap.get(cv2.CAP_PROP_FPS))
 
     def __len__(self):
         return self.nF  # number of files
@@ -337,3 +351,10 @@ def convert_images2bmp():
             '/Users/glennjocher/PycharmProjects/', '../')
         with open(label_path.replace('5k', '5k_bmp'), 'w') as file:
             file.write(lines)
+
+
+if __name__ == "__main__":
+    path = "/home/chrizandr/sports"
+    dloader = iter(LoadImages(path, sample_second=True))
+    item = next(dloader)
+    pdb.set_trace()

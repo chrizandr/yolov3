@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<annotations>
+  <version>1.1</version>
+  <track id="0" label="player">
+    <box frame="0" outside="0" occluded="0" keyframe="1" xtl="743.26" ytl="436.84" xbr="811.35" ybr="536.02">
+    </box>
+  </track>
+  <track id="1" label="player">
+    <box frame="0" outside="0" occluded="0" keyframe="1" xtl="1036.36" ytl="365.79" xbr="1102.97" ybr="469.41">
+    </box>
+  </track>
+  <track id="2" label="player">
+    <box frame="0" outside="0" occluded="0" keyframe="1" xtl="263.65" ytl="390.95" xbr="324.34" ybr="484.21">
+    </box>
+  </track>
+</annotations>

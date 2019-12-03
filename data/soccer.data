@@ -1,6 +1,6 @@
-classes=80
+classes=1
 train=/home/chrizandr/yolov3/files/train.txt
 valid=/home/chrizandr/yolov3/files/val.txt
-names=data/coco.names
+names=data/soccer.names
 backup=backup/
 eval=coco

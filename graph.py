@@ -65,8 +65,8 @@ def plot_train_val(train_res, val_res, save_prefix):
 
 
 if __name__ == "__main__":
-    output_file = "results.txt"
-    save_prefix = "yolo_300_multi"
+    output_file = "results2.txt"
+    save_prefix = "yolo_synth_mod"
     train_line = True
 
     read_output_file(output_file, save_prefix, train_line)

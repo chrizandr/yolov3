@@ -31,7 +31,7 @@ def select_test_set():
         copyfile(src, dest)
 
 
-def split_training_data(data_folder, prefix="", split=0.7):
+def split_training_data(data_folder, prefix="", split=0.8):
     files = os.listdir(data_folder)
     files = [f for f in files if f.endswith(".jpg") or f.endswith(".png")]
     if len(prefix) == 0:
@@ -50,5 +50,5 @@ def split_training_data(data_folder, prefix="", split=0.7):
 
 
 if __name__ == "__main__":
-    data_folder = "/ssd_scratch/cvit/chrizandr/images/"
+    data_folder = "/ssd_scratch/cvit/chrizandr/synth_data/images/"
     split_training_data(data_folder)
