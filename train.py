@@ -22,13 +22,16 @@ def train(
         multi_scale=False,
         freeze_backbone=False,
         num_workers=4,
-        transfer=False  # Transfer learning (train only YOLO layers)
+        transfer=False,
+        pretrained="yolov3-spp.pt"
+        # Transfer learning (train only YOLO layers)
 
 ):
     weights = 'weights' + os.sep
-    latest = weights + 'latest2.pt'
-    best = weights + 'best2.pt'
-    result_file = 'results2.txt'
+    prefix = "sports_synth"
+    latest = weights + 'latest'+prefix+'.pt'
+    best = weights + 'best'+prefix+'.pt'
+    result_file = 'results'+prefix+'.txt'
     device = torch_utils.select_device()
 
     if multi_scale:
@@ -53,11 +56,12 @@ def train(
     nf = int(model.module_defs[model.yolo_layers[0] - 1]['filters'])  # yolo layer size (i.e. 255)
     if resume:  # Load previously saved model
         if transfer:  # Transfer learning
-            chkpt = torch.load(weights + 'yolov3-spp.pt', map_location=device)
+            chkpt = torch.load(weights + pretrained, map_location=device)
             # model.load_state_dict({k: v for k, v in chkpt['model'].items() if v.numel() > 1 and v.shape[0] != 255},
             #                       strict=False)
-            model.load_state_dict({k: v for k, v in chkpt['model'].items() if model.state_dict()[k].numel() == v.numel()},
-                                  strict=False)
+            # model.load_state_dict({k: v for k, v in chkpt['model'].items() if model.state_dict()[k].numel() == v.numel()},
+            #                       strict=False)
+            model.load_state_dict(chkpt['model'])
 
             # Train YOLO layers
             for i, p in enumerate(model.parameters()):
@@ -124,6 +128,7 @@ def train(
             if int(name.split('.')[1]) > 100:  # if layer < 75
                 print("Training layer", name)
                 p.requires_grad = True
+
 
     for epoch in range(start_epoch, epochs):
         avg_metrics = np.array([0, 0, 0, 0, 0], dtype=np.float)
@@ -222,8 +227,8 @@ def train(
                 torch.save(chkpt, best)
 
             # Save backup every 10 epochs (optional)
-            if epoch > 0 and epoch % save_per_epoch == 0:
-                torch.save(chkpt, weights + 'backup2%g.pt' % epoch)
+            if epoch > 0 and save_per_epoch != 0 and epoch % save_per_epoch == 0:
+                torch.save(chkpt, weights + 'backup%g.pt' % epoch)
 
             # Delete checkpoint
             del chkpt
@@ -247,6 +252,7 @@ if __name__ == '__main__':
     parser.add_argument('--rank', default=0, type=int, help='distributed training node rank')
     parser.add_argument('--world-size', default=1, type=int, help='number of nodes for distributed training')
     parser.add_argument('--backend', default='nccl', type=str, help='distributed backend')
+    parser.add_argument('--pretrained', default='yolov3-spp.pt', type=str, help='pretrained model name')
     parser.add_argument('--nosave', action='store_true', help='do not save training results')
     opt = parser.parse_args()
     print(opt, end='\n\n')
@@ -265,5 +271,6 @@ if __name__ == '__main__':
         multi_scale=opt.multi_scale,
         num_workers=opt.num_workers,
         save_per_epoch=opt.save_per_epoch,
-        freeze_backbone=opt.freeze
+        freeze_backbone=opt.freeze,
+        pretrained=opt.pretrained
     )

@@ -111,7 +111,7 @@ if __name__ == "__main__":
 
     output_dir = "output/"
     # h, w
-    size = (720, 1280)
+    size = (1024, 1024)
 
     range = [0.5]
     # range = [0.75]

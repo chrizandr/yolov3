@@ -190,7 +190,7 @@ class Darknet(nn.Module):
             if mtype in ['convolutional', 'upsample', 'maxpool']:
                 x = module(x)
             elif mtype == 'route':
-                layer_i = [int(x) for x in module_def['layers'].split(',')]
+                layer_i = [int(y) for y in module_def['layers'].split(',')]
                 if len(layer_i) == 1:
                     x = layer_outputs[layer_i[0]]
                 else:
